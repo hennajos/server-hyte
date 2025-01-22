@@ -1,5 +1,4 @@
 import express from 'express';
-import {getItems} from '.items.js';
 const hostname = '127.0.0.1';
 const app = express();
 const port = 3000;
@@ -9,7 +8,7 @@ app.use(express.json());
 app.use(express.json());
 
 app.get('/api/', (req, res) => {
-  console.log(Get-pyyntö havaittu);
+  console.log('Get-pyyntö havaittu');
   console.log(req.url);
   res.send('Welcome to my REST API!');
 });
@@ -27,7 +26,7 @@ app.get('/api/sum/:num1/:num2', (req, res) => {
     });
     return;
   }
-  res.json({Summa: num1 + num2});
+  res.json({Päiviä jäljellä: num1 + num2});
 });
 
 app.post('/api/tervehdys', (req, res) => {
