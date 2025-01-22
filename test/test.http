@@ -1,0 +1,11 @@
+GET http://localhost:3000
+
+GET http://localhost:3000/api/sum/:num1/:num2
+
+POST http://localhost:3000/api/moro
+
+content-type: application/json
+
+{"sender": "Käyttäjä"
+"message": "Hyvää työtä"
+};
