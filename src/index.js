@@ -26,7 +26,7 @@ app.get('/api/sum/:num1/:num2', (req, res) => {
     });
     return;
   }
-  res.json({Päiviä jäljellä: num1 + num2});
+  res.json({Kirjauksia: num1 + num2});
 });
 
 app.post('/api/tervehdys', (req, res) => {
