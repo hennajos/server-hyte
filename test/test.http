@@ -1,11 +1,64 @@
 GET http://localhost:3000
 
+### gets sum
 GET http://localhost:3000/api/sum/:num1/:num2
 
-POST http://localhost:3000/api/moro
+### adds new greeting
+POST http://localhost:3000/api/tervehdys
 
 content-type: application/json
 
 {"sender": "Käyttäjä"
 "message": "Hyvää työtä"
 };
+
+### gets all items
+GET http://localhost:3000/api/items
+
+### gets item by id
+GET http://localhost:3000/api/items/2
+
+### adds new item
+POST http://localhost:3000/api/items
+content-type: application/json
+
+{
+  "name": "Ruoho"
+}
+
+### updates item
+PUT http://localhost:3000/api/items/4
+content-type: application/json
+
+{
+  "name": "new name"
+}
+
+### deletes item
+DELETE http://localhost:3000/api/items/2
+
+### gets all users
+GET http://localhost:3000/api/users
+
+### get user by id
+
+GET http://localhost:3000/api/users/2
+
+### adds new user
+POST http://localhost:3000/api/users
+content-type: application/json
+
+{
+  "username": "NewUser",
+  "password": "goodpassword",
+  "email": "newuser@example.com"
+}
+
+### user login
+POST http://localhost:3000/api/users/login
+content-type: application/json
+
+{
+  "username": "NewUser",
+  "password": "goodpassword"
+}
