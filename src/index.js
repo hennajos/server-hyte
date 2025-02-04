@@ -1,9 +1,12 @@
 import express from 'express';
 import {addItem, getItems, getItembyId, editItem, deleteItem} from './items.js';
 import {getUsers, addUser, login, getUserbyId} from './users.js';
+import cors from 'cors';
 const hostname = '127.0.0.1';
 const app = express();
 const port = 3000;
+
+app.use(cors());
 
 app.use('/', express.static('public'));
 
