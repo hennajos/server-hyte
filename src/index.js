@@ -1,56 +1,49 @@
 import express from 'express';
-import {addItem, getItems, getItembyId, editItem, deleteItem} from './items.js';
-import {getUsers, addUser, login, getUserbyId} from './users.js';
 import cors from 'cors';
+import {addItem, deleteItem, editItem, getItemById, getItems} from './items.js';
+
+import userRouter from './routes/user-router.js';
+
+import entryRouter from './routes/entry-router.js';
+
+app.use('/api/entries', entryRouter);
+
 const hostname = '127.0.0.1';
 const app = express();
 const port = 3000;
 
+// middleware, mitä tarvitaan, jotta Ullan fronttiharjoitukset toimivat (Vite)
+// lisää myös: import cors from 'cors'; tiedoston yläosaan
+// ja asenna paketti: npm install cors
 app.use(cors());
 
+// Staattinen html-sivusto tarjoillaan palvelimen juuressa
 app.use('/', express.static('public'));
-
+// middleware, joka lukee json data POST-pyyntöjen rungosta (body)
 app.use(express.json());
 
+// rest-apin resurssit tarjoillaan /api/-polun alla
 app.get('/api/', (req, res) => {
-  console.log('Get-pyyntö havaittu');
+  console.log('get-pyyntö apin juureen havaittu');
   console.log(req.url);
   res.send('Welcome to my REST API!');
 });
 
+// Users resurssin päätepisteet (endpoints)
+app.use('/api/users', userRouter);
+
+// Items (testi mock-data) resurssin päätepisteet (endpoints)
 app.get('/api/items', getItems);
-app.get('/api/items/:id', getItembyId);
+app.get('/api/items/:id', getItemById);
 app.post('/api/items', addItem);
-app.put('/api/items', editItem);
-app.delete('/api/items', deleteItem);
+app.put('/api/items/:id', editItem);
+app.delete('/api/items/:id', deleteItem);
 
-app.get('/api/users', getUsers);
-app.post('/api/users', addUser);
-app.post('/api/users/login', login);
-app.get('/api/users/:id', getUserbyId);
+// viikko 4
+app.use("/api/entries", entryRoutes);
+app.use("/api/users", userRoutes);
 
-
-
-app.get('/api/sum/:num1/:num2', (req, res) => {
-  console.log(req.params);
-  const num1 = Number(req.params.num1);
-  const num2 = Number(req.params.num2);
-  if(isNaN(num1) || isNaN(num2)) {
-    res.status(400);
-    res.json({
-      error: 'Molempien parametrien pitää olla numeroita.'
-    });
-    return;
-  }
-  res.json({'Kirjauksia': num1 + num2});
-});
-
-app.post('/api/tervehdys', (req, res) => {
-  console.log(req.body);
-  res.status(201);
-  res.json({reply: 'Tervetuloa sovellukseen ' + req.body.sender});
-});
-
+// palvelimen käynnistys lopuksi kaikkien määritysten jälkeen
 app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });

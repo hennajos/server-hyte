@@ -1,5 +1,5 @@
 -- Mysql -u root -pSALASANA
-
+DROP DATABASE IF EXISTS HealthDiary;
 CREATE DATABASE HealthDiary;
 USE HealthDiary;
 

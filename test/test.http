@@ -1,64 +1,71 @@
-GET http://localhost:3000
+# Testing http requests with Visual Studio Code REST Client extension
 
-### gets sum
-GET http://localhost:3000/api/sum/:num1/:num2
+## Items (test resource/endpoints using hard-coded mock data)
 
-### adds new greeting
-POST http://localhost:3000/api/tervehdys
-
-content-type: application/json
-
-{"sender": "Käyttäjä"
-"message": "Hyvää työtä"
-};
-
-### gets all items
+### get all items
 GET http://localhost:3000/api/items
 
-### gets item by id
-GET http://localhost:3000/api/items/2
+### get item by id
+GET http://localhost:3000/api/items/3
 
-### adds new item
+### post a new item
 POST http://localhost:3000/api/items
 content-type: application/json
 
 {
-  "name": "Ruoho"
+  "name": "kukka"
 }
 
-### updates item
-PUT http://localhost:3000/api/items/4
+### modify an existing item (by using item's id as a parameter in url)
+PUT http://localhost:3000/api/items/3
 content-type: application/json
 
 {
-  "name": "new name"
+  "name": "uusi nimi"
 }
 
-### deletes item
-DELETE http://localhost:3000/api/items/2
+### delete an item (by id)
+DELETE http://localhost:3000/api/items/3
 
-### gets all users
+
+###########################
+## Users resource endpoints
+
+### get all users
 GET http://localhost:3000/api/users
 
 ### get user by id
+GET http://localhost:3000/api/users/3
 
-GET http://localhost:3000/api/users/2
-
-### adds new user
+### create a new user (user registration)
 POST http://localhost:3000/api/users
 content-type: application/json
 
 {
-  "username": "NewUser",
-  "password": "goodpassword",
-  "email": "newuser@example.com"
+  "username": "newusername",
+  "password": "passwordx",
+  "email": "newemail@example.com"
 }
+
+### modify an existing user by id
+PUT http://localhost:3000/api/users/3
+content-type: application/json
+
+{
+  "username": "editedname",
+  "password": "editedpasswordx",
+  "email": "editedmail@example.com"
+}
+
+### delete a user (by id)
+DELETE http://localhost:3000/api/users/3
 
 ### user login
 POST http://localhost:3000/api/users/login
 content-type: application/json
 
 {
-  "username": "NewUser",
-  "password": "goodpassword"
+  "username": "newusername",
+  "password": "passwordx"
 }
+
