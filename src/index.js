@@ -40,8 +40,8 @@ app.put('/api/items/:id', editItem);
 app.delete('/api/items/:id', deleteItem);
 
 // viikko 4
-app.use("/api/entries", entryRoutes);
-app.use("/api/users", userRoutes);
+app.use("/api/entries", entryRouter);
+app.use("/api/users", userRouter);
 
 // palvelimen käynnistys lopuksi kaikkien määritysten jälkeen
 app.listen(port, hostname, () => {
