@@ -13,12 +13,13 @@ const userRouter = express.Router();
 userRouter.route('/')
   // only logged in user can fetch the user list
   .get(authenticateToken, getUsers)
-  .post(addUser);
+  .post(authenticateToken, addUser)
+  .put(authenticateToken, editUser);
 
 // all routes to /api/users/:id
 userRouter.route('/:id')
-  .get(getUserById)
-  .put(editUser)
-  .delete(deleteUser);
+  .get(authenticateToken, getUserById)
+  .put(authenticateToken, editUser)
+  .delete(authenticateToken, deleteUser)
 
 export default userRouter;

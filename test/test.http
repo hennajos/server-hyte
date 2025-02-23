@@ -66,8 +66,8 @@ POST http://localhost:3000/api/auth/login
 content-type: application/json
 
 {
-  "username": "newusername",
-  "password": "passwordx"
+  "username": "JohnDoe",
+  "password": "tobehashed"
 }
 
 ### get my user info

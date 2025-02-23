@@ -23,9 +23,12 @@ const login = async (req, res) => {
 };
 
 const getMe = (req, res) => {
-  const user = req.user;
-  res.json(user);
+  console.log('getMe', req.user);
+  if (req.user) {
+    res.json({message: 'token ok', user: req.user});
+  } else {
+    res.sendStatus(401);
+  }
 };
-
 
 export {login, getMe};
