@@ -1,38 +1,34 @@
-import {listAllEntries, findEntryById, addEntry} from "../models/entry-model.js";
+import {listAllEntries, findEntryById, insertEntry, selectEntriesByUserId} from "../models/entry-model.js";
 
+/**
+ *
+ * @param {*} req
+ * @param {*} res
+ */
 const getEntries = async (req, res) => {
-  const result = await listAllEntries();
-  if (!result.error) {
-    res.json(result);
-  } else {
-    res.status(500);
-    res.json(result);
-  }
+  const entries = await selectEntriesByUserId(req.user.user_id);
+  res.json(entries);
 };
 
 const getEntryById = async (req, res) => {
-  const entry = await findEntryById(req.params.id);
-  if (entry) {
-    res.json(entry);
-  } else {
-    res.sendStatus(404);
+  // to do add catch error
+  try {
+    const entry = await findEntryById(req.params.id);
+    if (entry) {
+      res.json(entry);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (error) {
+    res.status(500).json({message: "Failed to fetch entry", error: error.message})
   }
 };
 
 const postEntry = async (req, res) => {
-  const {user_id, entry_date, mood, weight, sleep_hours, notes} = req.body;
-  if (entry_date && (weight || mood || sleep_hours || notes) && user_id) {
-    const result = await addEntry(req.body);
-    if (result.entry_id) {
-      res.status(201);
-      res.json({message: 'New entry added.', ...result});
-    } else {
-      res.status(500);
-      res.json(result);
-    }
-  } else {
-    res.sendStatus(400);
-  }
+  const newEntry = req.body;
+  newEntry.user_id = req.user.user_id;
+  insertEntry(newEntry);
+  res.status(201).json({message: "Entry added"});
 };
 
 const putEntry = (req, res) => {

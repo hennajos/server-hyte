@@ -29,7 +29,7 @@ const selectUserById = async (userId) => {
     return rows[0];
   } catch (error) {
     console.error(error);
-    throw new Error('database error');
+    throw new Error('Database error.');
   }
 };
 
@@ -72,5 +72,23 @@ const selectUserByNameAndPassword = async (username, password) => {
   }
 };
 
+/**
+ *
+ * @param {*} username
+ * @returns {object}
+ */
+const selectUserByUsername = async (username) => {
+  try {
+    const [rows] = await promisePool.query(
+      'SELECT user_id, username, password, email, created_at, user_level FROM Users WHERE username=?',
+      [username],
+    );
+    console.log(rows);
+    return rows[0];
+  } catch (error) {
+    console.error(error);
+    throw new Error('database error');
+  }
+};
 
-export {selectAllUsers, selectUserById, insertUser, selectUserByNameAndPassword};
+export {selectAllUsers, selectUserById, insertUser, selectUserByNameAndPassword, selectUserByUsername};

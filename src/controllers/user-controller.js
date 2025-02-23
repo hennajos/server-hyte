@@ -1,4 +1,5 @@
 import {insertUser, selectAllUsers, selectUserById, selectUserByNameAndPassword} from '../models/user-model.js';
+import bcrypt from 'bcryptjs';
 
 // kaikkien käyttäjätietojen haku
 const getUsers = async (req, res) => {
@@ -34,22 +35,29 @@ const addUser = async (req, res) => {
   // tarkistetaan, että pyynnössä on kaikki tarvittavat tiedot
   if (username && password && email) {
     // luodaan uusi käyttäjä olio ja lisätään se tietokantaa käyttäen modelia
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
     const newUser = {
       username,
-      password,
+      password: hashedPassword,
       email,
     };
+    try {
     const result = await insertUser(newUser);
     res.status(201);
     return res.json({message: 'User added. id: ' + result});
+  } catch (error) {
+    console.error(error.message);
+    return res.status(400).json({message: 'DB error: ' + error.message});
   }
+}
   res.status(400);
   return res.json({
     message: 'Request should have username, password and email properties.',
   });
 };
 
-// Userin muokkaus id:n perusteella
+// Userin muokkaus id:n perusteella (TODO DB)
 const editUser = (req, res) => {
   console.log('editUser request body', req.body);
   const user = users.find((user) => user.id == req.params.id);
@@ -63,7 +71,7 @@ const editUser = (req, res) => {
   }
 };
 
-// Userin poisto id:n perusteella
+// Userin poisto id:n perusteella (TODO DB)
 const deleteUser = (req, res) => {
   console.log('deleteUser', req.params.id);
   const index = users.findIndex((user) => user.id == req.params.id);
@@ -78,7 +86,6 @@ const deleteUser = (req, res) => {
   }
 };
 
-// user authentication (login)
 const login = async (req, res) => {
   const {username, password} = req.body;
   if (!username) {
@@ -92,4 +99,15 @@ const login = async (req, res) => {
   }
 };
 
-export {getUsers, getUserById, addUser, editUser, deleteUser, login};
+const putUser = async (req, res) => {
+  // get user id from token
+  const token_user_id = req.user.user_id;
+  // get user id from request
+  const user_id = req.params.id;
+  // check that user is updating own data
+  if (token_user_id !== user_id) {
+    return res.status(403).json({error: 403, message: 'forbidden'});
+  }
+};
+
+export {getUsers, getUserById, addUser, editUser, deleteUser, login, putUser};

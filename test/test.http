@@ -13,7 +13,7 @@ POST http://localhost:3000/api/items
 content-type: application/json
 
 {
-  "name": "kukka"
+  "name": "Sitruuna"
 }
 
 ### modify an existing item (by using item's id as a parameter in url)
@@ -21,7 +21,7 @@ PUT http://localhost:3000/api/items/3
 content-type: application/json
 
 {
-  "name": "uusi nimi"
+  "name": "new name for this item"
 }
 
 ### delete an item (by id)
@@ -33,6 +33,7 @@ DELETE http://localhost:3000/api/items/3
 
 ### get all users
 GET http://localhost:3000/api/users
+Authorization: Bearer
 
 ### get user by id
 GET http://localhost:3000/api/users/3
@@ -42,9 +43,9 @@ POST http://localhost:3000/api/users
 content-type: application/json
 
 {
-  "username": "newusername",
+  "username": "newusername2",
   "password": "passwordx",
-  "email": "newemail@example.com"
+  "email": "newemail2@example.com"
 }
 
 ### modify an existing user by id
@@ -61,7 +62,7 @@ content-type: application/json
 DELETE http://localhost:3000/api/users/3
 
 ### user login
-POST http://localhost:3000/api/users/login
+POST http://localhost:3000/api/auth/login
 content-type: application/json
 
 {
@@ -69,3 +70,23 @@ content-type: application/json
   "password": "passwordx"
 }
 
+### get my user info
+GET http://localhost:3000/api/auth/me
+Authorization: Bearer
+
+### post new entry
+POST http://localhost:3000/api/auth/entries
+Authorization: Bearer
+content-type: application/json
+
+{
+"entry_date": "2025-02-13",
+"mood": "happy",
+"weight": 55,
+"sleep_hours": 9,
+"notes": "none"
+}
+
+### Get user entries
+GET http://localhost:3000/api/auth/entries
+Authorization: Bearer
