@@ -12,8 +12,6 @@ const customError = (message, status) => {
   return error;
 };
 
-
-
 const notFoundHandler = (req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
   error.status = 404;
@@ -54,4 +52,3 @@ const validationErrorHandler = (req, res, next) => {
 };
 
 export {notFoundHandler, errorHandler, validationErrorHandler, customError};
-

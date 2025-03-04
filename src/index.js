@@ -5,8 +5,6 @@ import entryRouter from './routes/entry-router.js';
 import authRouter from './routes/auth-router.js';
 import {errorHandler, notFoundHandler} from './middlewares/error-handler.js';
 
-import {notFoundHandler, errorHandler} from './middlewares/error-handler.js';
-
 const hostname = '127.0.0.1';
 const app = express();
 const port = 3000;
