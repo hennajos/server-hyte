@@ -8,29 +8,37 @@ import {customError} from '../middlewares/error-handler.js';
 // user authentication (login)
 const login = async (req, res, next) => {
   const {username, password} = req.body;
-  if (!username) {
-    return next(customError('Username missing.', 400));
+  if (!username || !password) {
+    return next(customError('Username and password are required.', 400));
   }
+
+  try {
     const user = await selectUserByUsername(username);
-  if (user) {
-    const match = await bcrypt.compare(password, user.password);
-    if (match) {
-      const token = jwt.sign(user, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN,
-      });
-      res.json({message: 'login ok', user, token});
+    if (!user) {
+      return next(customError('Bad username/password.', 401));
     }
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return next(customError('Bad username/password.', 401));
+    }
+
+    const token = jwt.sign({id: user.id, username: user.username}, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+
+    res.json({message: 'login ok', token});
+  } catch (error) {
+    next(customError(error.message, 500));
   }
-  next(customError('Bad username/password.', 401));
 };
 
-const getMe = (req, res) => {
+const getMe = (req, res, next) => {
   console.log('getMe', req.user);
-  if (req.user) {
-    res.json({message: 'token ok', user: req.user});
-  } else {
-    res.sendStatus(401);
+  if (!req.user) {
+    return next(customError('Unauthorized', 401));
   }
+  res.json({message: 'token ok', user: {id: req.user.id, username: req.user.username}});
 };
 
 export {login, getMe};

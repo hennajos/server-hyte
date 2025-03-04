@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import {validationResult} from 'express-validator';
+import promisePool from '../utils/database.js';
 import {
   insertUser,
   selectAllUsers,
@@ -9,10 +10,10 @@ import {customError} from '../middlewares/error-handler.js';
 
 // kaikkien käyttäjätietojen haku
 const getUsers = async (req, res) => {
-  // in real world application, password properties should never be sent to client
   const users = await selectAllUsers();
   res.json(users);
 };
+
 
 // Userin haku id:n perusteella
 const getUserById = async (req, res, next) => {
@@ -25,15 +26,14 @@ const getUserById = async (req, res, next) => {
     if (user) {
       res.json(user);
     } else {
-      res.status(404).json({message: 'User not found'});
+      next(customError('User not found', 404));
     }
   } catch (error) {
-    next(error);
+    next(customError(error.message, 500));
   }
 };
 
 // käyttäjän lisäys (rekisteröinti)
-// lisätään parempi virheenkäsittely myöhemmin
 const addUser = async (req, res, next) => {
   console.log('addUser request body', req.body);
   // esitellään 3 uutta muuttujaa, johon sijoitetaan req.body:n vastaavien propertyjen arvot
@@ -52,37 +52,57 @@ const addUser = async (req, res, next) => {
     res.status(201);
     return res.json({message: 'User added. id: ' + result});
   } catch (error) {
-    return next(customError(error.message, 400));
+    next(customError(error.message, 500));
   }
 };
 
-// Userin muokkaus id:n perusteella (TODO: käytä DB)
-const editUser = (req, res) => {
-  console.log('editUser request body', req.body);
-  const user = users.find((user) => user.id == req.params.id);
-  if (user) {
-    user.username = req.body.username;
-    user.password = req.body.password;
-    user.email = req.body.email;
-    res.json({message: 'User updated.'});
-  } else {
-    res.status(404).json({message: 'User not found'});
+// Userin muokkaus id:n perusteella (käytä DB)
+const editUser = async (req, res, next) => {
+  try {
+    console.log('editUser request body', req.body);
+    const {username, password, email} = req.body;
+    const [result] = await promisePool.execute(
+      'UPDATE users SET username = ?, password = ?, email = ? WHERE id = ?',
+      [username, password, email, req.params.id]
+    );
+    if (result.affectedRows > 0) {
+      res.json({message: 'User updated.'});
+    } else {
+      res.status(404).json({message: 'User not found'});
+    }
+  } catch (error) {
+    next(customError(error.message, 500));
   }
 };
 
-// Userin poisto id:n perusteella (TODO: käytä DB)
-const deleteUser = (req, res) => {
-  console.log('deleteUser', req.params.id);
-  const index = users.findIndex((user) => user.id == req.params.id);
-  //console.log('index', index);
-  // findIndex returns -1 if user is not found
-  if (index !== -1) {
-    // remove one user from array based on index
-    users.splice(index, 1);
-    res.json({message: 'User deleted.'});
-  } else {
-    res.status(404).json({message: 'User not found'});
+const postUser = async (req, res) => {
+  // validation errors can be retrieved from the request object (added by express-validator middleware)
+  const errors = validationResult(req);
+  // check if any validation errors
+  if (!errors.isEmpty()) {
+    return res.status(400).json({errors: errors.array()});
+  }
+  const newUserId = await addUser(req.body);
+  res.json({message: 'new user added', user_id: newUserId});
+};
+
+// Userin poisto id:n perusteella (käytä DB)
+const deleteUser = async (req, res, next) => {
+  try {
+    console.log('deleteUser', req.params.id);
+    const [result] = await promisePool.execute(
+      'DELETE FROM users WHERE id = ?',
+      [req.params.id]
+    );
+
+    if (result.affectedRows > 0) {
+      res.json({ message: 'User deleted.' });
+    } else {
+      res.status(404).json({message: 'User not found'});
+    }
+  } catch (error) {
+    next(customError(error.message, 500));
   }
 };
 
-export {getUsers, getUserById, addUser, editUser, deleteUser};
+export {getUsers, getUserById, addUser, editUser, deleteUser, postUser};
