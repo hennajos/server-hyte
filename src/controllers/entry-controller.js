@@ -5,10 +5,13 @@ import {listAllEntries, findEntryById, insertEntry, selectEntriesByUserId} from 
  * @param {*} req
  * @param {*} res
  */
-const getEntries = async (req, res) => {
-  const entries = await selectEntriesByUserId(req.user.user_id);
-  res.json(entries);
-};
+const getEntries = async (req, res, next) => {
+  try {
+    const entries = await selectEntriesByUserId(req.user.user_id);
+    res.json(entries);
+  } catch (error) {
+    next(error);
+  }
 
 const getEntryById = async (req, res) => {
   // to do add catch error
@@ -24,12 +27,15 @@ const getEntryById = async (req, res) => {
   }
 };
 
-const postEntry = async (req, res) => {
+const postEntry = async (req, res, next) => {
   const newEntry = req.body;
   newEntry.user_id = req.user.user_id;
-  insertEntry(newEntry);
-  res.status(201).json({message: "Entry added"});
-};
+  try {
+    await insertEntry(newEntry);
+    res.status(201).json({message: "Entry added."});
+  } catch (error) {
+    next(error);
+  }
 
 const putEntry = (req, res) => {
   // placeholder for future implementation

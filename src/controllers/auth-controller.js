@@ -2,14 +2,16 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import 'dotenv/config';
 import {selectUserByUsername} from '../models/user-model.js';
+import {customError} from '../middlewares/error-handler.js';
+
 
 // user authentication (login)
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   const {username, password} = req.body;
   if (!username) {
-    return res.status(401).json({message: 'Username missing.'});
+    return next(customError('Username missing.', 400));
   }
-  const user = await selectUserByUsername(username);
+    const user = await selectUserByUsername(username);
   if (user) {
     const match = await bcrypt.compare(password, user.password);
     if (match) {
@@ -19,7 +21,7 @@ const login = async (req, res) => {
       res.json({message: 'login ok', user, token});
     }
   }
-    res.status(401).json({message: 'Bad username/password.'});
+  next(customError('Bad username/password.', 401));
 };
 
 const getMe = (req, res) => {

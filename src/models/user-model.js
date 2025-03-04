@@ -39,17 +39,12 @@ const selectUserById = async (userId) => {
  * @returns
  */
 const insertUser = async (user) => {
-  try {
     const [result] = await promisePool.query(
       'INSERT INTO Users (username, password, email) VALUES (?, ?, ?)',
       [user.username, user.password, user.email],
     );
     console.log('insertUser', result);
     return result.insertId;
-  } catch (error) {
-    console.error(error);
-    throw new Error('Database error.');
-  }
 };
 
 /**

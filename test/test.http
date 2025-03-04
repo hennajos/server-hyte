@@ -33,7 +33,7 @@ DELETE http://localhost:3000/api/items/3
 
 ### get all users
 GET http://localhost:3000/api/users
-Authorization: Bearer
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwidXNlcm5hbWUiOiJoZW51IiwicGFzc3dvcmQiOiIkMmEkMTAkcGNyeTBYa2FvQkJ2TzJhdlVuclllLkNGMUZOYWRnY3hlcFEzUk96eVZjMkYyay5oR201dXUiLCJlbWFpbCI6ImhlbnVAZXhhbXBsZS5jb20iLCJjcmVhdGVkX2F0IjoiMjAyNS0wMi0yNVQxMTo1MTozMy4wMDBaIiwidXNlcl9sZXZlbCI6InJlZ3VsYXIiLCJpYXQiOjE3NDA0ODU2NDEsImV4cCI6MTc0MDU3MjA0MX0.2MC49rwu2B5Y4xfThOUxMxrhxAbrM9H4gZbBRkpk7eU
 
 ### get user by id
 GET http://localhost:3000/api/users/3
@@ -43,9 +43,9 @@ POST http://localhost:3000/api/users
 content-type: application/json
 
 {
-  "username": "newusername2",
-  "password": "passwordx",
-  "email": "newemail2@example.com"
+  "username": "henu",
+  "password": "salakala",
+  "email": "henu@example.com"
 }
 
 ### modify an existing user by id
@@ -66,17 +66,17 @@ POST http://localhost:3000/api/auth/login
 content-type: application/json
 
 {
-  "username": "JohnDoe",
-  "password": "tobehashed"
+  "username": "henu",
+  "password": "salakala"
 }
 
 ### get my user info
 GET http://localhost:3000/api/auth/me
-Authorization: Bearer
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwidXNlcm5hbWUiOiJoZW51IiwicGFzc3dvcmQiOiIkMmEkMTAkcGNyeTBYa2FvQkJ2TzJhdlVuclllLkNGMUZOYWRnY3hlcFEzUk96eVZjMkYyay5oR201dXUiLCJlbWFpbCI6ImhlbnVAZXhhbXBsZS5jb20iLCJjcmVhdGVkX2F0IjoiMjAyNS0wMi0yNVQxMTo1MTozMy4wMDBaIiwidXNlcl9sZXZlbCI6InJlZ3VsYXIiLCJpYXQiOjE3NDA0ODU2NDEsImV4cCI6MTc0MDU3MjA0MX0.2MC49rwu2B5Y4xfThOUxMxrhxAbrM9H4gZbBRkpk7eU
 
 ### post new entry
 POST http://localhost:3000/api/auth/entries
-Authorization: Bearer
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwidXNlcm5hbWUiOiJoZW51IiwicGFzc3dvcmQiOiIkMmEkMTAkcGNyeTBYa2FvQkJ2TzJhdlVuclllLkNGMUZOYWRnY3hlcFEzUk96eVZjMkYyay5oR201dXUiLCJlbWFpbCI6ImhlbnVAZXhhbXBsZS5jb20iLCJjcmVhdGVkX2F0IjoiMjAyNS0wMi0yNVQxMTo1MTozMy4wMDBaIiwidXNlcl9sZXZlbCI6InJlZ3VsYXIiLCJpYXQiOjE3NDA0ODU2NDEsImV4cCI6MTc0MDU3MjA0MX0.2MC49rwu2B5Y4xfThOUxMxrhxAbrM9H4gZbBRkpk7eU
 content-type: application/json
 
 {
@@ -89,4 +89,4 @@ content-type: application/json
 
 ### Get user entries
 GET http://localhost:3000/api/auth/entries
-Authorization: Bearer
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo3LCJ1c2VybmFtZSI6Im5ld3VzZXJuYW1lIiwiZW1haWwiOiJuZXdlbWFpbEBleGFtcGxlLmNvbSIsImNyZWF0ZWRfYXQiOiIyMDI1LTAyLTA2VDEzOjA5OjA3LjAwMFoiLCJ1c2VyX2xldmVsIjoicmVndWxhciIsImlhdCI6MTczOTM2NTk0MiwiZXhwIjoxNzM5NDUyMzQyfQ.IO9ly-VkHACUPca_TGNlNGLA3brezP-tck1yQ1nFC5M

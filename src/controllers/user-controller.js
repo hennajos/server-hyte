@@ -1,5 +1,8 @@
 import {insertUser, selectAllUsers, selectUserById, selectUserByNameAndPassword} from '../models/user-model.js';
 import bcrypt from 'bcryptjs';
+import {validationResult} from 'express-validator';
+import {customError} from '../middlewares/error-handler.js';
+
 
 // kaikkien käyttäjätietojen haku
 const getUsers = async (req, res) => {
@@ -9,7 +12,7 @@ const getUsers = async (req, res) => {
 };
 
 // Userin haku id:n perusteella
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
   console.log('getUserById', req.params.id);
 
   try {
@@ -22,39 +25,40 @@ const getUserById = async (req, res) => {
       res.status(404).json({message: 'User not found'});
     }
   } catch (error) {
-    res.status(500).json({message: error.message});
+    next(error);
   }
 };
 
 // käyttäjän lisäys (rekisteröinti)
-// lisätään virheenkäsittely myöhemmin
-const addUser = async (req, res) => {
+const addUser = async (req, res, next) => {
   console.log('addUser request body', req.body);
+  // tarkistetaan täyttääkö validaation
+  const errors = validationResult(req);
+  console.log('Validation result: ', errors);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({message: 'Validation error', errors: errors.errors});
+  }
+
   // esitellään 3 uutta muuttujaa, johon sijoitetaan req.body:n vastaavien propertyjen arvot
   const {username, password, email} = req.body;
-  // tarkistetaan, että pyynnössä on kaikki tarvittavat tiedot
-  if (username && password && email) {
-    // luodaan uusi käyttäjä olio ja lisätään se tietokantaa käyttäen modelia
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    const newUser = {
-      username,
-      password: hashedPassword,
-      email,
-    };
-    try {
-    const result = await insertUser(newUser);
-    res.status(201);
-    return res.json({message: 'User added. id: ' + result});
-  } catch (error) {
-    console.error(error.message);
-    return res.status(400).json({message: 'DB error: ' + error.message});
-  }
 }
-  res.status(400);
-  return res.json({
-    message: 'Request should have username, password and email properties.',
-  });
+
+// luodaan selväkielisestä sanasta tiiviste, joka tallennetaan kantaan
+const salt = await bcrypt.genSalt(10);
+const hashedPassword = await bcrypt.hash(password, salt);
+// luodaan uusi käyttäjä olio ja lisätään se tietokantaa käyttäen modelia
+const newUser = {
+  username,
+  password: hashedPassword,
+  email,
+};
+try {
+  const result = await insertUser(newUser);
+  res.status(201);
+  return res.json({message: 'User added. id: ' + result});
+} catch (error) {
+  return next(customError(error.message, 400));
+
 };
 
 // Userin muokkaus id:n perusteella (TODO DB)
