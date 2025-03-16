@@ -15,9 +15,9 @@ POST http://localhost:3000/api/users
 content-type: application/json
 
 {
-  "username": "henu1",
+  "username": "henna1",
   "password": "Salakala",
-  "email": "henu1@example.com"
+  "email": "henna1@example.com"
 }
 
 ### modify an existing user by id
@@ -38,7 +38,7 @@ POST http://localhost:3000/api/auth/login
 content-type: application/json
 
 {
-  "username": "henu1",
+  "username": "henna1",
   "password": "Salakala"
 }
 
