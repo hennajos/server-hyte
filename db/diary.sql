@@ -19,6 +19,7 @@ CREATE TABLE DiaryEntries (
     mood VARCHAR(50),
     weight DECIMAL(5,2),
     sleep_hours INT,
+    meal TEXT,
     notes TEXT,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
@@ -45,6 +46,15 @@ CREATE TABLE Exercises (
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
+CREATE TABLE FoodEntries (
+    entry_id INT PRIMARY KEY,
+    user_id INT,
+    entry_date DATE NOT NULL,
+    meal TEXT NOT NULL,
+    notes TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
 
 INSERT INTO Users (username, password, email, created_at, user_level) VALUES
 ('johndoe', 'hashed_password', 'johndoe@example.com', '2024-01-01 09:00:00', 'regular'),
@@ -75,6 +85,8 @@ INSERT INTO Exercises (user_id, type, duration, intensity, date) VALUES
 (3, 'Yoga', 50, 'Low', '2024-01-18'),
 (1, 'Weight Training', 40, 'High', '2024-01-19');
 
+INSERT INTO
+FoodEntries (entry_id, user_id, entry_date, meal, notes, created_at) VALUES (1, 1, '2025-04-01', 'carrot', 'Great carrot', '2025-04-01 20:00:00');
 
 --
 INSERT INTO Users (username, password, email) VALUES

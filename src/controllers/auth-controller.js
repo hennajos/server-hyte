@@ -1,44 +1,40 @@
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import {selectUserByUsername} from '../models/user-model.js';
 import {customError} from '../middlewares/error-handler.js';
 
-
 // user authentication (login)
 const login = async (req, res, next) => {
   const {username, password} = req.body;
-  if (!username || !password) {
-    return next(customError('Username and password are required.', 400));
+  if (!username) {
+    return next(customError('Username missing.', 400));
+    //return res.status(401).json({message: 'Username missing.'});
   }
-
-  try {
-    const user = await selectUserByUsername(username);
-    if (!user) {
-      return next(customError('Bad username/password.', 401));
-    }
-
+  const user = await selectUserByUsername(username);
+  // jos käyttäjä löytyi tietokannasta verrataan kirjautumiseen syötettyä sanaa tietokannan
+  // salasanatiivisteeseen
+  if (user) {
     const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-      return next(customError('Bad username/password.', 401));
+    if (match) {
+      // ennen tokenin generointia ja
+      // käyttäjätietojen lähettämistä vastauksessa,
+      // poistetaan salasana niistä
+      delete user.password;
+      const token = jwt.sign(user, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+      });
+
+      return res.json({message: 'login ok', user, token});
     }
-
-    const token = jwt.sign({id: user.id, username: user.username}, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN,
-    });
-
-    res.json({message: 'login ok', token});
-  } catch (error) {
-    next(customError(error.message, 500));
   }
+  //res.status(401).json({message: 'Bad username/password.'});
+  next(customError('Bad username/password.', 401));
 };
 
-const getMe = (req, res, next) => {
-  console.log('getMe', req.user);
-  if (!req.user) {
-    return next(customError('Unauthorized', 401));
-  }
-  res.json({message: 'token ok', user: {id: req.user.id, username: req.user.username}});
+const getMe = (req, res) => {
+  const user = req.user;
+  res.json(user);
 };
 
 export {login, getMe};

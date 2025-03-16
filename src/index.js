@@ -19,6 +19,8 @@ app.use(cors());
 app.use('/', express.static('public'));
 // middleware, joka lukee json data POST-pyyntöjen rungosta (body)
 app.use(express.json());
+//palvellaan docs staattisena
+app.use('/docs', express.static('docs'));
 
 // rest-apin resurssit tarjoillaan /api/-polun alla
 app.get('/api/', (req, res) => {
@@ -45,4 +47,5 @@ app.use(errorHandler);
 // palvelimen käynnistys lopuksi kaikkien määritysten jälkeen
 app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
+  console.log(`API docs available at http://localhost:${port}/docs`);
 });

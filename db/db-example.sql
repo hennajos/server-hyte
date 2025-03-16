@@ -20,18 +20,10 @@ CREATE TABLE DiaryEntries (
     sleep_hours INT,
     notes TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    meal TEXT,
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
-CREATE TABLE FoodEntries (
-    entry_id INT PRIMARY KEY,
-    user_id INT,
-    entry_date DATE NOT NULL,
-    meal TEXT NOT NULL,
-    notes TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
-);
 
 ALTER TABLE Users ADD COLUMN user_level VARCHAR(10) DEFAULT 'regular';
 
@@ -54,16 +46,5 @@ INSERT INTO DiaryEntries (user_id, entry_date, mood, weight, sleep_hours, notes,
   (1, '2024-01-11', 'Tired', 70.2, 6, 'Long day at work, need rest', '2024-01-11 20:00:00'),
   (2, '2024-01-10', 'Stressed', 65.0, 7, 'Busy day, a bit stressed out', '2024-01-10 21:00:00');
 
-INSERT INTO
-FoodEntries (entry_id, user_id, entry_date, meal, notes, created_at) VALUES (1, 1, '2025-04-01', 'carrot', 'Great carrot', '2025-04-01 20:00:00');
-
-UPDATE
-FoodEntries
-SET meal = 'bread'
-WHERE entry_id = 1;
-
-SELECT meal FROM FoodEntries where entry_id = 1;
-
-DELETE FROM FoodEntries WHERE entry_id = 1;
 
 

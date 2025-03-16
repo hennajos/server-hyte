@@ -4,6 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "apidoc": "apidoc -i src/ -o docs/",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,6 +21,7 @@
     "prettier": "3.4.2"
   },
   "dependencies": {
+    "apidoc": "^1.2.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
@@ -41,5 +43,15 @@
   "bugs": {
     "url": "https://github.com/hennajos/server-hyte/issues"
   },
-  "homepage": "https://github.com/hennajos/server-hyte#readme"
+  "homepage": "https://github.com/hennajos/server-hyte#readme",
+  "apidoc": {
+    "title": "My API docs",
+    "name": "My API docs",
+    "url": "https://example.com/api/v1",
+    "order": [
+      "Authentication",
+      "User"
+    ]
+  }
 }
+

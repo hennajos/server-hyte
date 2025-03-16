@@ -1,19 +1,19 @@
 import bcrypt from 'bcryptjs';
 import {validationResult} from 'express-validator';
-import promisePool from '../utils/database.js';
 import {
   insertUser,
   selectAllUsers,
   selectUserById,
 } from '../models/user-model.js';
 import {customError} from '../middlewares/error-handler.js';
+import promisePool from '..utils/database.js';
 
 // kaikkien käyttäjätietojen haku
 const getUsers = async (req, res) => {
+  // in real world application, password properties should never be sent to client
   const users = await selectAllUsers();
   res.json(users);
 };
-
 
 // Userin haku id:n perusteella
 const getUserById = async (req, res, next) => {
@@ -26,7 +26,7 @@ const getUserById = async (req, res, next) => {
     if (user) {
       res.json(user);
     } else {
-      next(customError('User not found', 404));
+      res.status(404).json({message: 'User not found'});
     }
   } catch (error) {
     next(customError(error.message, 500));
@@ -34,6 +34,7 @@ const getUserById = async (req, res, next) => {
 };
 
 // käyttäjän lisäys (rekisteröinti)
+// lisätään parempi virheenkäsittely myöhemmin
 const addUser = async (req, res, next) => {
   console.log('addUser request body', req.body);
   // esitellään 3 uutta muuttujaa, johon sijoitetaan req.body:n vastaavien propertyjen arvot
@@ -59,17 +60,17 @@ const addUser = async (req, res, next) => {
 // Userin muokkaus id:n perusteella (käytä DB)
 const editUser = async (req, res, next) => {
   try {
-    console.log('editUser request body', req.body);
+  console.log('editUser request body', req.body);
     const {username, password, email} = req.body;
     const [result] = await promisePool.execute(
       'UPDATE users SET username = ?, password = ?, email = ? WHERE id = ?',
       [username, password, email, req.params.id]
     );
     if (result.affectedRows > 0) {
-      res.json({message: 'User updated.'});
-    } else {
-      res.status(404).json({message: 'User not found'});
-    }
+    res.json({message: 'User updated.'});
+  } else {
+    res.status(404).json({message: 'User not found'});
+  }
   } catch (error) {
     next(customError(error.message, 500));
   }
@@ -89,7 +90,7 @@ const postUser = async (req, res) => {
 // Userin poisto id:n perusteella (käytä DB)
 const deleteUser = async (req, res, next) => {
   try {
-    console.log('deleteUser', req.params.id);
+  console.log('deleteUser', req.params.id);
     const [result] = await promisePool.execute(
       'DELETE FROM users WHERE id = ?',
       [req.params.id]
@@ -97,8 +98,8 @@ const deleteUser = async (req, res, next) => {
 
     if (result.affectedRows > 0) {
       res.json({ message: 'User deleted.' });
-    } else {
-      res.status(404).json({message: 'User not found'});
+  } else {
+    res.status(404).json({message: 'User not found'});
     }
   } catch (error) {
     next(customError(error.message, 500));

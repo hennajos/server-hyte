@@ -1,17 +1,21 @@
 import {insertEntry, selectEntriesByUserId} from '../models/entry-model.js';
 import {customError} from '../middlewares/error-handler.js';
 
-
-const postEntry = async (req, res, next) => {
-  // user_id, entry_date, mood, weight, sleep_hours, notes
-  const newEntry = req.body;
-  newEntry.user_id = req.user.user_id;
-
+const postEntry = async (req, res) => {
   try {
-    await insertEntry(newEntry);
-    res.status(201).json({message: "Entry added."});
+      const user_id = req.user.user_id; // Autentikoidun käyttäjän ID
+      const { entry_date, mood, weight, sleep_hours, meal, notes } = req.body;
+
+      if (!user_id) {
+          return res.status(400).json({ error: 'User ID missing' });
+      }
+
+      const entry = { user_id, entry_date, mood, weight, sleep_hours, meal, notes };
+      const entryId = await insertEntry(entry);
+      res.status(201).json({ message: 'Entry added', entryId });
   } catch (error) {
-    next(customError(error.message, 500));
+    console.error("Error in postEntry:", error);
+    res.status(500).json({ error: error.message });
   }
 };
 
