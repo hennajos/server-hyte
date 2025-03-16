@@ -6,7 +6,7 @@ import {
   selectUserById,
 } from '../models/user-model.js';
 import {customError} from '../middlewares/error-handler.js';
-import promisePool from '..utils/database.js';
+import promisePool from '../utils/database.js';
 
 // kaikkien käyttäjätietojen haku
 const getUsers = async (req, res) => {
